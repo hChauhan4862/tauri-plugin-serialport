@@ -102,7 +102,7 @@ pub fn available_ports() -> Vec<String> {
         name_list.push(i.port_name.clone());
     }
 
-    println!("串口列表: {:?}", &name_list);
+    // println!("COM Ports: {:?}", &name_list);
 
     name_list
 }

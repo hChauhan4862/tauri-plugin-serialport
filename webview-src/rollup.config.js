@@ -7,7 +7,7 @@ export default {
   output: {
     dir: './webview-dist',
     entryFileNames: '[name].js',
-    format: 'es',
+    format: 'cjs',
     exports: 'auto'
   },
   plugins: [
