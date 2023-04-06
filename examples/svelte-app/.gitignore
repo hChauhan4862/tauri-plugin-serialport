@@ -1,3 +1,7 @@
 node_modules/
 public/build/
 public/index.tauri.html
+.yarn/*
+!.yarn/releases
+!.yarn/plugins
+.pnp.*
