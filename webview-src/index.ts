@@ -1,6 +1,6 @@
 import { UnlistenFn } from '@tauri-apps/api/event';
 import { invoke } from '@tauri-apps/api/tauri';
-import { appWindow } from '@tauri-apps/api/window';
+// import { appWindow } from '@tauri-apps/api/window';
 
 export interface InvokeResult {
   code: number;
@@ -62,7 +62,7 @@ class Serialport {
   }
 
   /**
-   * @description: 获取串口列表
+   * @description: Get the serial port list
    * @return {Promise<string[]>}
    */
   static async available_ports(): Promise<string[]> {
@@ -74,7 +74,7 @@ class Serialport {
   }
 
   /**
-   * @description: 强制关闭
+   * @description: Force to terminate the serial port
    * @param {string} path
    * @return {Promise<void>}
    */
@@ -85,7 +85,7 @@ class Serialport {
   }
 
   /**
-   * @description: 关闭所有串口
+   * @description: Close all serial ports
    * @return {Promise<void>}
    */
   static async closeAll(): Promise<void> {
@@ -93,7 +93,7 @@ class Serialport {
   }
 
   /**
-   * @description: 取消串口监听
+   * @description: Cancel serial port listen
    * @return {Promise<void>}
    */
   async cancelListen(): Promise<void> {
@@ -104,12 +104,12 @@ class Serialport {
       }
       return;
     } catch (error) {
-      return Promise.reject('取消串口监听失败: ' + error);
+      return Promise.reject('Failed to stop listening to the serial port: ' + error);
     }
   }
 
   /**
-   * @description: 取消读取数据
+   * @description: Cancel read serial port data
    * @return {Promise<void>}
    */
   async cancelRead(): Promise<void> {
@@ -150,7 +150,7 @@ class Serialport {
   }
 
   /**
-   * @description: 关闭串口
+   * @description: Close serial port
    * @return {Promise<InvokeResult>}
    */
   async close(): Promise<void> {
@@ -172,47 +172,47 @@ class Serialport {
   }
 
   /**
-   * @description: 监听串口信息
+   * @description: Listen to serial port data
    * @param {function} fn
    * @return {Promise<void>}
    */
-  async listen(fn: (...args: any[]) => void, isDecode = true): Promise<void> {
-    try {
-      await this.cancelListen();
-      let readEvent = 'plugin-serialport-read-' + this.options.path;
-      this.unListen = await appWindow.listen<ReadDataResult>(
-        readEvent,
-        ({ payload }) => {
-          try {
-            if (isDecode) {
-              const decoder = new TextDecoder(this.encoding);
-              const data = decoder.decode(new Uint8Array(payload.data));
-              fn(data);
-            } else {
-              fn(new Uint8Array(payload.data));
-            }
-          } catch (error) {
-            console.error(error);
-          }
-        },
-      );
-      return;
-    } catch (error) {
-      return Promise.reject('监听串口数据失败: ' + error);
-    }
-  }
+  // async listen(fn: (...args: any[]) => void, isDecode = true): Promise<void> {
+  //   try {
+  //     await this.cancelListen();
+  //     let readEvent = 'plugin-serialport-read-' + this.options.path;
+  //     this.unListen = await appWindow.listen<ReadDataResult>(
+  //       readEvent,
+  //       ({ payload }) => {
+  //         try {
+  //           if (isDecode) {
+  //             const decoder = new TextDecoder(this.encoding);
+  //             const data = decoder.decode(new Uint8Array(payload.data));
+  //             fn(data);
+  //           } else {
+  //             fn(new Uint8Array(payload.data));
+  //           }
+  //         } catch (error) {
+  //           console.error(error);
+  //         }
+  //       },
+  //     );
+  //     return;
+  //   } catch (error) {
+  //     return Promise.reject('Failed to listen to the serial port: ' + error);
+  //   }
+  // }
 
   /**
-   * @description: 打开串口
+   * @description: Open serial port
    * @return {*}
    */
   async open(): Promise<void> {
     try {
       if (!this.options.path) {
-        return Promise.reject(`path 不能为空!`);
+        return Promise.reject(`path cannot be empty!`);
       }
       if (!this.options.baudRate) {
-        return Promise.reject(`baudRate 不能为空!`);
+        return Promise.reject(`baudRate cannot be empty!`);
       }
       if (this.isOpen) {
         return;
@@ -234,8 +234,8 @@ class Serialport {
   }
 
   /**
-   * @description: 读取串口信息
-   * @param {ReadOptions} options 读取选项 { timeout, size }
+   * @description: Read data from the serial port
+   * @param {ReadOptions} options Read options { timeout, size }
    * @return {Promise<void>}
    */
   async read(options?: ReadOptions): Promise<void> {
@@ -251,7 +251,7 @@ class Serialport {
   }
 
   /**
-   * @description: 设置串口 波特率
+   * @description: Set the serial port baud rate
    * @param {number} value
    * @return {Promise<void>}
    */
@@ -273,7 +273,7 @@ class Serialport {
   }
 
   /**
-   * @description: 设置串口 path
+   * @description: Set the serial port path
    * @param {string} value
    * @return {Promise<void>}
    */
@@ -295,14 +295,14 @@ class Serialport {
   }
 
   /**
-   * @description: 串口写入数据
+   * @description: Write data to the serial port
    * @param {string} value
    * @return {Promise<number>}
    */
   async write(value: string): Promise<number> {
     try {
       if (!this.isOpen) {
-        return Promise.reject(`串口 ${this.options.path} 未打开!`);
+        return Promise.reject(`Port ${this.options.path} is not open!`);
       }
       return await invoke<number>('plugin:serialport|write', {
         value,
@@ -314,14 +314,14 @@ class Serialport {
   }
 
   /**
-   * @description: 写入二进制数据到串口
+   * @description: Write binary data to the serial port
    * @param {Uint8Array} value
    * @return {Promise<number>}
    */
   async writeBinary(value: Uint8Array | number[]): Promise<number> {
     try {
       if (!this.isOpen) {
-        return Promise.reject(`串口 ${this.options.path} 未打开!`);
+        return Promise.reject(`Port ${this.options.path} is not open!`);
       }
       if (value instanceof Uint8Array || value instanceof Array) {
         return await invoke<number>('plugin:serialport|write_binary', {
@@ -330,7 +330,7 @@ class Serialport {
         });
       } else {
         return Promise.reject(
-          'value 参数类型错误! 期望类型: string, Uint8Array, number[]',
+          'value Parameter must be of type string, Uint8Array, or number[]!',
         );
       }
     } catch (error) {
