@@ -7,6 +7,15 @@ export interface ReadDataResult {
     size: number;
     data: number[];
 }
+export interface SerialPortInfo {
+    port_name: string;
+    port_type: string;
+    vid: string | null;
+    pid: string | null;
+    manufacturer: string | null;
+    product: string | null;
+    serial_number: string | null;
+}
 export interface SerialportOptions {
     path: string;
     baudRate: number;
@@ -40,9 +49,9 @@ declare class Serialport {
     constructor(options: SerialportOptions);
     /**
      * @description: Get the serial port list
-     * @return {Promise<string[]>}
+     * @return {Promise<SerialPortInfo[]>}
      */
-    static available_ports(): Promise<string[]>;
+    static available_ports(): Promise<SerialPortInfo[]>;
     /**
      * @description: Force to terminate the serial port
      * @param {string} path
