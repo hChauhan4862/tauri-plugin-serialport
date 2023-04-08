@@ -12,6 +12,16 @@ export interface ReadDataResult {
   data: number[];
 }
 
+export interface SerialPortInfo {
+  port_name: string;
+  port_type: string;
+  vid: string | null;
+  pid: string | null;
+  manufacturer: string | null;
+  product: string | null;
+  serial_number: string | null;
+}
+
 export interface SerialportOptions {
   path: string;
   baudRate: number;
@@ -63,11 +73,11 @@ class Serialport {
 
   /**
    * @description: Get the serial port list
-   * @return {Promise<string[]>}
+   * @return {Promise<SerialPortInfo[]>}
    */
-  static async available_ports(): Promise<string[]> {
+  static async available_ports(): Promise<SerialPortInfo[]> {
     try {
-      return await invoke<string[]>('plugin:serialport|available_ports');
+      return await invoke<SerialPortInfo[]>('plugin:serialport|available_ports');
     } catch (error) {
       return Promise.reject(error);
     }
