@@ -48,7 +48,7 @@ declare class Serialport {
     size: number;
     constructor(options: SerialportOptions);
     /**
-     * @description: Get the serial port list
+     * @description: Get the list of serial ports
      * @return {Promise<SerialPortInfo[]>}
      */
     static available_ports(): Promise<SerialPortInfo[]>;
@@ -64,7 +64,7 @@ declare class Serialport {
      */
     static closeAll(): Promise<void>;
     /**
-     * @description: Cancel serial port listen
+     * @description: Stop listening to serial port
      * @return {Promise<void>}
      */
     cancelListen(): Promise<void>;
@@ -92,6 +92,7 @@ declare class Serialport {
      * @param {function} fn
      * @return {Promise<void>}
      */
+    listen(fn: (...args: any[]) => void, isDecode?: boolean): Promise<void>;
     /**
      * @description: Open serial port
      * @return {*}

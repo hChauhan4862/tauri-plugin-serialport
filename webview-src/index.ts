@@ -1,6 +1,6 @@
 import { UnlistenFn } from '@tauri-apps/api/event';
 import { invoke } from '@tauri-apps/api/tauri';
-// import { appWindow } from '@tauri-apps/api/window';
+import { appWindow } from '@tauri-apps/api/window';
 
 export interface InvokeResult {
   code: number;
@@ -72,7 +72,7 @@ class Serialport {
   }
 
   /**
-   * @description: Get the serial port list
+   * @description: Get the list of serial ports
    * @return {Promise<SerialPortInfo[]>}
    */
   static async available_ports(): Promise<SerialPortInfo[]> {
@@ -103,7 +103,7 @@ class Serialport {
   }
 
   /**
-   * @description: Cancel serial port listen
+   * @description: Stop listening to serial port
    * @return {Promise<void>}
    */
   async cancelListen(): Promise<void> {
@@ -186,31 +186,31 @@ class Serialport {
    * @param {function} fn
    * @return {Promise<void>}
    */
-  // async listen(fn: (...args: any[]) => void, isDecode = true): Promise<void> {
-  //   try {
-  //     await this.cancelListen();
-  //     let readEvent = 'plugin-serialport-read-' + this.options.path;
-  //     this.unListen = await appWindow.listen<ReadDataResult>(
-  //       readEvent,
-  //       ({ payload }) => {
-  //         try {
-  //           if (isDecode) {
-  //             const decoder = new TextDecoder(this.encoding);
-  //             const data = decoder.decode(new Uint8Array(payload.data));
-  //             fn(data);
-  //           } else {
-  //             fn(new Uint8Array(payload.data));
-  //           }
-  //         } catch (error) {
-  //           console.error(error);
-  //         }
-  //       },
-  //     );
-  //     return;
-  //   } catch (error) {
-  //     return Promise.reject('Failed to listen to the serial port: ' + error);
-  //   }
-  // }
+  async listen(fn: (...args: any[]) => void, isDecode = true): Promise<void> {
+    try {
+      await this.cancelListen();
+      let readEvent = 'plugin-serialport-read-' + this.options.path;
+      this.unListen = await appWindow.listen<ReadDataResult>(
+        readEvent,
+        ({ payload }) => {
+          try {
+            if (isDecode) {
+              const decoder = new TextDecoder(this.encoding);
+              const data = decoder.decode(new Uint8Array(payload.data));
+              fn(data);
+            } else {
+              fn(new Uint8Array(payload.data));
+            }
+          } catch (error) {
+            console.error(error);
+          }
+        },
+      );
+      return;
+    } catch (error) {
+      return Promise.reject('Failed to listen to the serial port: ' + error);
+    }
+  }
 
   /**
    * @description: Open serial port
