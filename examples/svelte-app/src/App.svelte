@@ -4,7 +4,7 @@
   let serialport: Serialport | undefined = undefined;
 
   function openSerialport() {
-    serialport = new Serialport({ path: 'COM10', baudRate: 9600 });
+    serialport = new Serialport({ path: 'COM4', baudRate: 115200 });
     serialport
       .open()
       .then((res) => {
@@ -70,6 +70,7 @@
   }
 
   function listen() {
+    console.log(serialport)
     serialport
       .listen((data: any[]) => {
         console.log('listen serialport data: ', data);

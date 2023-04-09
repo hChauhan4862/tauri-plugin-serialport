@@ -64,15 +64,15 @@ declare class Serialport {
      */
     static closeAll(): Promise<void>;
     /**
-     * @description: Stop listening to serial port
-     * @return {Promise<void>}
+     * @description: Stop listening to the serial port
+     * @return {Promise<boolean>}
      */
-    cancelListen(): Promise<void>;
+    cancelListen(): Promise<boolean>;
     /**
      * @description: Cancel read serial port data
-     * @return {Promise<void>}
+     * @return {Promise<boolean>}
      */
-    cancelRead(): Promise<void>;
+    cancelRead(): Promise<boolean>;
     /**
      * @description:
      * @param {object} options
@@ -84,26 +84,27 @@ declare class Serialport {
     }): Promise<void>;
     /**
      * @description: Close serial port
-     * @return {Promise<InvokeResult>}
+     * @return {Promise<boolean>}
      */
-    close(): Promise<void>;
+    close(): Promise<boolean>;
     /**
-     * @description: Listen to serial port data
+     * @description: Register a listener to receive data read from the serial port
      * @param {function} fn
-     * @return {Promise<void>}
+     * @return {Promise<boolean>}
      */
-    listen(fn: (...args: any[]) => void, isDecode?: boolean): Promise<void>;
+    listen(fn: (...args: any[]) => void, isDecode?: boolean): Promise<boolean>;
     /**
      * @description: Open serial port
-     * @return {*}
+     * @return {Promise<boolean>}
      */
-    open(): Promise<void>;
+    open(): Promise<boolean>;
     /**
-     * @description: Read data from the serial port
+     * @description: Tell the backend to start reading the serial port data.
+     * The backend will read the data and send it to the front end through the listen method.
      * @param {ReadOptions} options Read options { timeout, size }
-     * @return {Promise<void>}
+     * @return {Promise<boolean>}
      */
-    read(options?: ReadOptions): Promise<void>;
+    read(options?: ReadOptions): Promise<boolean>;
     /**
      * @description: Set the serial port baud rate
      * @param {number} value

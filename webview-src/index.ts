@@ -103,16 +103,16 @@ class Serialport {
   }
 
   /**
-   * @description: Stop listening to serial port
-   * @return {Promise<void>}
+   * @description: Stop listening to the serial port
+   * @return {Promise<boolean>}
    */
-  async cancelListen(): Promise<void> {
+  async cancelListen(): Promise<boolean> {
     try {
       if (this.unListen) {
         this.unListen();
         this.unListen = undefined;
       }
-      return;
+      return Promise.resolve(true);
     } catch (error) {
       return Promise.reject('Failed to stop listening to the serial port: ' + error);
     }
@@ -120,13 +120,14 @@ class Serialport {
 
   /**
    * @description: Cancel read serial port data
-   * @return {Promise<void>}
+   * @return {Promise<boolean>}
    */
-  async cancelRead(): Promise<void> {
+  async cancelRead(): Promise<boolean> {
     try {
-      return await invoke<void>('plugin:serialport|cancel_read', {
+      await invoke<void>('plugin:serialport|cancel_read', {
         path: this.options.path,
       });
+      return Promise.resolve(true);
     } catch (error) {
       return Promise.reject(error);
     }
@@ -161,32 +162,31 @@ class Serialport {
 
   /**
    * @description: Close serial port
-   * @return {Promise<InvokeResult>}
+   * @return {Promise<boolean>}
    */
-  async close(): Promise<void> {
+  async close(): Promise<boolean> {
     try {
       if (!this.isOpen) {
-        return;
+        return Promise.resolve(true);
       }
       await this.cancelRead();
-      const res = await invoke<void>('plugin:serialport|close', {
+      await invoke<void>('plugin:serialport|close', {
         path: this.options.path,
       });
-
       await this.cancelListen();
       this.isOpen = false;
-      return res;
+      return Promise.resolve(true);
     } catch (error) {
       return Promise.reject(error);
     }
   }
 
   /**
-   * @description: Listen to serial port data
+   * @description: Register a listener to receive data read from the serial port
    * @param {function} fn
-   * @return {Promise<void>}
+   * @return {Promise<boolean>}
    */
-  async listen(fn: (...args: any[]) => void, isDecode = true): Promise<void> {
+  async listen(fn: (...args: any[]) => void, isDecode = true): Promise<boolean> {
     try {
       await this.cancelListen();
       let readEvent = 'plugin-serialport-read-' + this.options.path;
@@ -206,7 +206,7 @@ class Serialport {
           }
         },
       );
-      return;
+      return Promise.resolve(true);
     } catch (error) {
       return Promise.reject('Failed to listen to the serial port: ' + error);
     }
@@ -214,9 +214,9 @@ class Serialport {
 
   /**
    * @description: Open serial port
-   * @return {*}
+   * @return {Promise<boolean>}
    */
-  async open(): Promise<void> {
+  async open(): Promise<boolean> {
     try {
       if (!this.options.path) {
         return Promise.reject(`path cannot be empty!`);
@@ -225,7 +225,7 @@ class Serialport {
         return Promise.reject(`baudRate cannot be empty!`);
       }
       if (this.isOpen) {
-        return;
+        return Promise.resolve(true);
       }
       const res = await invoke<void>('plugin:serialport|open', {
         path: this.options.path,
@@ -237,24 +237,27 @@ class Serialport {
         timeout: this.options.timeout,
       });
       this.isOpen = true;
-      return Promise.resolve(res);
+      return Promise.resolve(true);
     } catch (error) {
       return Promise.reject(error);
     }
   }
 
+
   /**
-   * @description: Read data from the serial port
+   * @description: Tell the backend to start reading the serial port data.
+   * The backend will read the data and send it to the front end through the listen method.
    * @param {ReadOptions} options Read options { timeout, size }
-   * @return {Promise<void>}
+   * @return {Promise<boolean>}
    */
-  async read(options?: ReadOptions): Promise<void> {
+  async read(options?: ReadOptions): Promise<boolean> {
     try {
-      return await invoke<void>('plugin:serialport|read', {
+      await invoke<void>('plugin:serialport|read', {
         path: this.options.path,
         timeout: options?.timeout || this.options.timeout,
         size: options?.size || this.size,
       });
+      return Promise.resolve(true);
     } catch (error) {
       return Promise.reject(error);
     }

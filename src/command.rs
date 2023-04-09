@@ -25,23 +25,6 @@ fn get_serialport<T, F: FnOnce(&mut SerialportInfo) -> Result<T, Error>>(
     }
 }
 
-/// `get_worksheet` 根据 `path` 和 `sheet_name` 获取文件 sheet 实例。
-// fn try_get_serialport<T, F: FnOnce(&mut SerialportInfo) -> Result<T, Error>>(
-//     state: Arc<std::sync::Mutex<HashMap<std::string::String, SerialportInfo>>>,
-//     path: String,
-//     f: F,
-// ) -> Result<T, Error> {
-//     match state.try_lock() {
-//         Ok(mut map) => match map.get_mut(&path) {
-//             Some(serialport_info) => return f(serialport_info),
-//             None => {
-//                 return Err(Error::String(format!("未找到 {} 串口", &path)));
-//             }
-//         },
-//         Err(error) => return Err(Error::String(format!("获取文件锁失败! {} ", error))),
-//     }
-// }
-
 fn get_data_bits(value: Option<usize>) -> DataBits {
     match value {
         Some(value) => match value {
@@ -193,10 +176,12 @@ pub fn close<R: Runtime>(
             if serialports.remove(&path).is_some() {
                 Ok(())
             } else {
+                print!("Port {} is not opened", path);
                 Err(Error::String(format!("Port {} is not opened", path)))
             }
         }
         Err(error) => {
+            println!("Cannot get lock: {}", error);
             Err(Error::String(format!("Cannot get lock: {}", error)))
         }
     }
@@ -364,7 +349,7 @@ pub fn read<R: Runtime>(
                                 }
                             }
                             Err(_err) => {
-                                // println!("读取数据失败! {:?}", err);
+                                println!("Port {} read failed", path);
                             }
                         }
                         thread::sleep(Duration::from_millis(timeout.unwrap_or(200)));
