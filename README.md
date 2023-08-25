@@ -18,7 +18,7 @@ For more details and usage see the example app. Please note, below in the depend
 
 ```toml
 [dependencies.tauri-plugin-serialport]
-git = "https://github.com/lzhida/tauri-plugin-serialport"
+git = "https://github.com/hChauhan4862/tauri-plugin-serialport"
 tag = "v0.1.0"
 ```
 
@@ -40,24 +40,24 @@ fn main() {
 `Install from a tagged release`
 
 ```
-npm install github:lzhida/tauri-plugin-serialport#v0.1.0
+npm install github:hChauhan4862/tauri-plugin-serialport#v0.1.0
 # or
-yarn add github:lzhida/tauri-plugin-serialport#v0.1.0
+yarn add github:hChauhan4862/tauri-plugin-serialport#v0.1.0
 ```
 
 `Install from a branch (dev)`
 
 ```
-npm install https://github.com/lzhida/tauri-plugin-serialport\#master
+npm install https://github.com/hChauhan4862/tauri-plugin-serialport\#master
 # or
-yarn add https://github.com/lzhida/tauri-plugin-serialport\#master
+yarn add https://github.com/hChauhan4862/tauri-plugin-serialport\#master
 ```
 
 `package.json`
 
 ```json
   "dependencies": {
-    "tauri-plugin-serialport-api": "github:lzhida/tauri-plugin-serialport#v0.1.0",
+    "tauri-plugin-serialport-api": "github:hChauhan4862/tauri-plugin-serialport#v0.1.0",
   }
 ```
 
