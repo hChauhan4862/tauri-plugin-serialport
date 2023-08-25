@@ -116,7 +116,9 @@ pub fn available_ports() -> Vec<SerialPortInfo> {
         Err(_) => vec![],
     };
     list.sort_by(|a, b| a.port_name.cmp(&b.port_name));
-
+    
+    println!("Available ports: {:?}", list)
+        
     list.iter()
         .map(|port| {
             match &port.port_type {
